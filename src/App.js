@@ -1,37 +1,25 @@
-import { useState } from "react";
+import axios from "axios";
 import "./App.css";
-import Course from "./Course";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [courseList, setCourseList] = useState([]);
-  const [newCourse, setNewCourse] = useState("");
+  const [catFact, setCatFact] = useState("");
 
-  const handelChange = (event) => {
-    setNewCourse(event.target.value);
-  };
+  useEffect(() => {
+    fetchFact();
+  }, []);
 
-  const addCourse = () => {
-    setCourseList([...courseList, newCourse]);
-  };
-
-  const deleteCourse = (courseName) => {
-    setCourseList(courseList.filter((course) => courseName !== course));
+  const fetchFact = () => {
+    axios.get("https://catfact.ninja/fact").then((res) => {
+      console.log(res.data);
+      setCatFact(res.data.fact);
+    });
   };
 
   return (
     <div className="App">
-      <div className="add-course">
-        <input type="text" onChange={handelChange}></input>
-        <button onClick={addCourse}>add course</button>
-      </div>
-
-      <div className="list">
-        {courseList.map((course, index) => {
-          return (
-            <Course key={index} course={course} deleteCourse={deleteCourse} />
-          );
-        })}
-      </div>
+      <button onClick={fetchFact}>fetch data</button>
+      <p>{catFact}</p>
     </div>
   );
 }
